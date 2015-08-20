@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+import sys
+import subprocess
+import requests
+import getpass
+
+try:
+    username = subprocess.check_output(['git', 'config', 'github.username'])
+    username = username.strip()
+except subprocess.CalledProcessError:
+    print "No Github username found!"
+    print "Please set with:"
+    print "\tgit config github.username <username>"
+    sys.exit(1)
+
+try:
+    repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
+    repouser = repouser.strip()
+except subprocess.CalledProcessError:
+    print "No Github repo username found!"
+    print "Please set with:"
+    print "\tgit config github.repouser <repo username>"
+    sys.exit(1)
+
+try:
+    reponame = subprocess.check_output(['git', 'config', 'github.reponame'])
+    reponame = reponame.strip()
+except subprocess.CalledProcessError:
+    print "No Github repo name found!"
+    print "Please set with:"
+    print "\tgit config github.reponame <repo name>"
+    sys.exit(1)
+
+password = getpass.getpass("Please enter password: ")
+
+url = "https://api.github.com/repos/{0}/{1}/events".format(repouser, reponame)
+
+r = requests.get(url, auth=(username, password))
+
+evs = r.json()
+
+for event in evs:
+    event_id = event['id']
+    event_type = event['type']
+    event_user = event['actor']['login']
+    
+    if event_type == 'PushEvent':
+        head_sha = event['payload']['head']
+        # Find the associated message for HEAD
+        message = 'Unknown'
+        author = 'Unknown'
+        for commit in event['payload']['commits']:
+            if commit['sha'] == head_sha:
+                message = commit['message']
+                author = commit['author']['name']
+
+        print "{0} {1} {2} {3} '{4}' '{5}'".format(
+                event_id, event_type, event_user,
+                head_sha, author, message)
+    else:
+        # Catch-all for everything else
+        print "{0} {1} {2}".format(event_id, event_type, event_user)
+
