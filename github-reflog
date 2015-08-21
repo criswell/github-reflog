@@ -10,6 +10,21 @@ import textwrap
 import codecs
 from colorama import init, Fore, Back, Style
 
+try:
+    # Win32
+    from msvcrt import getch
+except ImportError:
+    # UNIX
+    def getch():
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            return sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old)
+
 UTF8Writer = codecs.getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
 
@@ -18,6 +33,8 @@ init()
 # Initialize the pager stuff. Note, this will probably only work on *nixes
 MAX_PAGE_LINES = os.environ.get('LINES', 30)
 CURRENT_LINE = 0
+PAGE_TEXT = Style.BRIGHT + "Press any key to continue...\r" + Style.NORMAL
+CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
 
 try:
     username = subprocess.check_output(['git', 'config', 'github.username'])
@@ -51,11 +68,12 @@ password = getpass.getpass("Please enter password: ")
 def pager(line=""):
     global CURRENT_LINE
     global MAX_PAGE_LINES
+    global PAGE_TEXT
+    global CLEAR_TEXT
     if CURRENT_LINE > MAX_PAGE_LINES - 3:
-        if (sys.version_info > (3, 0)):
-            input("Press enter to continue...\r")
-        else:
-            raw_input("Press enter to continue...\r")
+        print(PAGE_TEXT, end="")
+        getch()
+        print(CLEAR_TEXT, end="")
         CURRENT_LINE = 0
 
     print(line)
