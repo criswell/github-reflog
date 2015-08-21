@@ -7,7 +7,7 @@ import subprocess
 import requests
 import getpass
 import textwrap
-import codecs
+import time
 from colorama import init, Fore, Back, Style
 
 try:
@@ -25,15 +25,12 @@ except ImportError:
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
-UTF8Writer = codecs.getwriter('utf8')
-sys.stdout = UTF8Writer(sys.stdout)
-
 init()
 
 # Initialize the pager stuff. Note, this will probably only work on *nixes
 MAX_PAGE_LINES = os.environ.get('LINES', 30)
 CURRENT_LINE = 0
-PAGE_TEXT = Style.BRIGHT + "Press any key to continue...\r" + Style.NORMAL
+PAGE_TEXT = Style.BRIGHT + "Press any key to continue, Q to quit...\r" + Style.NORMAL
 CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
 
 try:
@@ -72,9 +69,11 @@ def pager(line=""):
     global CLEAR_TEXT
     if CURRENT_LINE > MAX_PAGE_LINES - 3:
         print(PAGE_TEXT, end="")
-        getch()
+        c = getch()
         print(CLEAR_TEXT, end="")
         CURRENT_LINE = 0
+        if c == 'q' or c == 'Q' or ord(c) == 3:
+            sys.exit(0)
 
     print(line)
     CURRENT_LINE = CURRENT_LINE + 1
@@ -155,6 +154,11 @@ def parse_event(event):
         # Catch-all for everything else
         pager(u"{0} {1} {2}\n".format(event_id, event_type, event_user))
 
+def parse_requests(r):
+    events = r.json()
+    for e in events:
+        parse_event(e)
+
 url = "https://api.github.com/repos/{0}/{1}/events".format(repouser, reponame)
 
 r = requests.get(url, auth=(username, password))
@@ -165,8 +169,14 @@ next_url = None
 if r.links.has_key('next'):
     next_url = r.links['next']
 
-events = r.json()
+while next_url is not None:
+    parse_requests(r)
+    print("\nSleeping for {0} seconds...\n".format(poll_interval))
+    time.sleep(float(poll_interval))
+    r = requests.get(url, auth=(username, password))
+    poll_interval = r.headers['x-poll-interval']
 
-for e in events:
-    parse_event(e)
+    next_url = None
+    if r.links.has_key('next'):
+        next_url = r.links['next']
 
