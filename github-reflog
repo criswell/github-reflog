@@ -10,6 +10,13 @@ import textwrap
 import time
 from colorama import init, Fore, Back, Style
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--naughty",
+        help="Ignore Github's requested poll-interval (naughty naughty)",
+        action="store_true")
+args = parser.parse_args()
+
 try:
     # Win32
     from msvcrt import getch
@@ -177,10 +184,11 @@ if r.links.has_key('next'):
 while next_url is not None:
     parse_requests(r)
     post_action_time = time.clock()
-    if post_action_time - action_time < poll_interval:
-        wait_time = poll_interval - (post_action_time - action_time)
-        print("\nSleeping for {0} seconds...\n".format(wait_time))
-        time.sleep(float(wait_time))
+    if not args.naughty:
+        if post_action_time - action_time < poll_interval:
+            wait_time = poll_interval - (post_action_time - action_time)
+            print("\nSleeping for {0} seconds...\n".format(wait_time))
+            time.sleep(float(wait_time))
     r = requests.get(url, auth=(username, password))
     poll_interval = r.headers['x-poll-interval']
 
