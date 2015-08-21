@@ -6,7 +6,11 @@ import subprocess
 import requests
 import getpass
 import textwrap
+import codecs
 from colorama import init, Fore, Back, Style
+
+UTF8Writer = codecs.getwriter('utf8')
+sys.stdout = UTF8Writer(sys.stdout)
 
 init()
 
@@ -39,6 +43,11 @@ except subprocess.CalledProcessError:
 
 password = getpass.getpass("Please enter password: ")
 
+def print_message(message):
+    pretty_message = textwrap.wrap(message)
+    for l in pretty_message:
+        print(u'   ' + l.decode())
+
 def parse_event(event):
     event_id = event['id']
     event_type = event['type']
@@ -48,11 +57,45 @@ def parse_event(event):
 
     # Header
     header = u'' + Fore.YELLOW + event_id + u' ' + event_type + Fore.RESET + \
-            '\nAuthor: {0} <{1}>'.format(event_user, event_userurl) + \
-            '\nDate:   {0}'.format(event_timestamp)
+            '\nUser:    {0} <{1}>'.format(event_user, event_userurl) + \
+            '\nDate:    {0}'.format(event_timestamp)
     print(header)
 
-    if event_type == 'PushEvent':
+    if event_type == 'PullRequestEvent':
+        pr = event['payload']['number']
+        pr_url = event['payload']['pull_request']['html_url']
+        action = event['payload']['action']
+        state = event['payload']['pull_request']['state']
+        created = event['payload']['pull_request']['created_at']
+        updated = event['payload']['pull_request']['updated_at']
+        pr_user = event['payload']['pull_request']['user']['login']
+        pr_userurl = event['payload']['pull_request']['user']['html_url']
+        head_sha = event['payload']['pull_request']['head']['sha']
+        head_ref = event['payload']['pull_request']['head']['ref']
+        title = event['payload']['pull_request']['title']
+        body = event['payload']['pull_request']['body']
+        print(u"PR:      #{0} <{1}>".format(pr, pr_url))
+        print(u"Created: {0}\tUpdated: {1}".format(created, updated))
+        print(u"SHA:     {0}".format(head_sha))
+        print(u"Author:  {0} <{1}>".format(pr_user, pr_userurl))
+        print(u"Ref:     {0}".format(head_ref))
+        print(u"Action:  " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+                Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+                state + Fore.RESET + Style.NORMAL)
+        if action == 'closed':
+            merged = event['payload']['pull_request']['merged']
+            if merged:
+                print(u"Merged:  " + Fore.GREEN + Style.BRIGHT + "True" + \
+                        Fore.RESET + Style.NORMAL)
+            else:
+                print(u"Merged:  " + Fore.RED + Style.BRIGHT + "False" + \
+                        Fore.RESET + Style.NORMAL + " (unmerged commits)")
+
+        print("\n " + Style.BRIGHT + title + Style.NORMAL + "\n")
+        print_message(body)
+        print()
+
+    elif event_type == 'PushEvent':
         head_sha = event['payload']['head']
         ref = event['payload']['ref']
         # Find the associated message for HEAD
@@ -65,16 +108,13 @@ def parse_event(event):
                 author = commit['author']['name']
                 email = commit['author']['email']
 
-        print(u"SHA:    {0}".format(head_sha) +
-              u"\nUser:   {0} <{1}>".format(author, email) +
-              u"\nRef:    {0}\n".format(ref))
+        print(u"SHA:     {0}".format(head_sha) +
+              u"\nAuthor:  {0} <{1}>".format(author, email) +
+              u"\nRef:     {0}\n".format(ref))
 
-        if message == 'Unknown':
-            print(event.dumps(sort_keys=True, indent=4, separators=(',', ': ')))
-        pretty_message = textwrap.wrap(message)
-        for l in pretty_message:
-            print(l)
+        print_message(message)
         print()
+
     else:
         # Catch-all for everything else
         print(u"{0} {1} {2}\n".format(event_id, event_type, event_user))
