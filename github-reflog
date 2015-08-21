@@ -28,7 +28,7 @@ except ImportError:
 init()
 
 # Initialize the pager stuff. Note, this will probably only work on *nixes
-MAX_PAGE_LINES = os.environ.get('LINES', 30)
+MAX_PAGE_LINES = int(os.environ.get('LINES', 30))
 CURRENT_LINE = 0
 PAGE_TEXT = Style.BRIGHT + "Press any key to continue, Q to quit...\r" + Style.NORMAL
 CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
