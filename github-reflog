@@ -37,27 +37,27 @@ try:
     username = subprocess.check_output(['git', 'config', 'github.username'])
     username = username.strip()
 except subprocess.CalledProcessError:
-    pager("No Github username found!")
-    pager("Please set with:")
-    pager("\tgit config github.username <username>")
+    print("No Github username found!")
+    print("Please set with:")
+    print("\tgit config github.username <username>")
     sys.exit(1)
 
 try:
     repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
     repouser = repouser.strip()
 except subprocess.CalledProcessError:
-    pager("No Github repo username found!")
-    pager("Please set with:")
-    pager("\tgit config github.repouser <repo username>")
+    print("No Github repo username found!")
+    print("Please set with:")
+    print("\tgit config github.repouser <repo username>")
     sys.exit(1)
 
 try:
     reponame = subprocess.check_output(['git', 'config', 'github.reponame'])
     reponame = reponame.strip()
 except subprocess.CalledProcessError:
-    pager("No Github repo name found!")
-    pager("Please set with:")
-    pager("\tgit config github.reponame <repo name>")
+    print("No Github repo name found!")
+    print("Please set with:")
+    print("\tgit config github.reponame <repo name>")
     sys.exit(1)
 
 password = getpass.getpass("Please enter password: ")
