@@ -4,32 +4,34 @@ import sys
 import subprocess
 import requests
 import getpass
+from __future__ import print_function
+from colorama import init, Fore, Back, Style
 
 try:
     username = subprocess.check_output(['git', 'config', 'github.username'])
     username = username.strip()
 except subprocess.CalledProcessError:
-    print "No Github username found!"
-    print "Please set with:"
-    print "\tgit config github.username <username>"
+    print("No Github username found!")
+    print("Please set with:")
+    print("\tgit config github.username <username>")
     sys.exit(1)
 
 try:
     repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
     repouser = repouser.strip()
 except subprocess.CalledProcessError:
-    print "No Github repo username found!"
-    print "Please set with:"
-    print "\tgit config github.repouser <repo username>"
+    print("No Github repo username found!")
+    print("Please set with:")
+    print("\tgit config github.repouser <repo username>")
     sys.exit(1)
 
 try:
     reponame = subprocess.check_output(['git', 'config', 'github.reponame'])
     reponame = reponame.strip()
 except subprocess.CalledProcessError:
-    print "No Github repo name found!"
-    print "Please set with:"
-    print "\tgit config github.reponame <repo name>"
+    print("No Github repo name found!")
+    print("Please set with:")
+    print("\tgit config github.reponame <repo name>")
     sys.exit(1)
 
 password = getpass.getpass("Please enter password: ")
@@ -55,10 +57,10 @@ for event in evs:
                 message = commit['message']
                 author = commit['author']['name']
 
-        print "{0} {1} {2} {3} '{4}' '{5}'".format(
+        print(u"{0} {1} {2} {3} '{4}' '{5}'".format(
                 event_id, event_type, event_user,
-                head_sha, author, message)
+                head_sha, author, message))
     else:
         # Catch-all for everything else
-        print "{0} {1} {2}".format(event_id, event_type, event_user)
+        print(u"{0} {1} {2}".format(event_id, event_type, event_user))
 
