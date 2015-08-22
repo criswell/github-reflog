@@ -147,6 +147,24 @@ def parse_event(event):
         pager_message(desc)
         pager()
 
+    elif event_type == 'IssueCommentEvent':
+        created = event['payload']['comment']['created_at']
+        updated = event['payload']['comment']['updated_at']
+        comment_url = event['payload']['comment']['html_url']
+        pager(u'Created: {0}'.format(created))
+        pager(u'Updated: {0}'.format(updated))
+        pager(u'URL:     {0}'.format(comment_url))
+        if 'issue' in event['payload']:
+            issue_number = event['payload']['issue']['number']
+            issue_url = event['payload']['issue']['html_url']
+            issue_title = event['payload']['issue']['title']
+            pager(u'Issue:   {0} <{1}>'.format(issue_number, issue_url))
+            pager(u' -Title: {0}'.format(issue_title))
+        comment_text = event['payload']['comment']['body']
+        pager()
+        pager_message(comment_text)
+        pager()
+
     elif event_type == 'PullRequestEvent':
         pr = event['payload']['number']
         pr_url = event['payload']['pull_request']['html_url']
