@@ -73,6 +73,10 @@ password = getpass.getpass("Please enter password: ")
 # Type conversion for Python3
 if isinstance(username, bytes):
     username = username.decode('utf-8')
+if isinstance(repouser, bytes):
+    repouser = repouser.decode('utf-8')
+if isinstance(reponame, bytes):
+    reponame = reponame.decode('utf-8')
 
 def pager(line=""):
     global CURRENT_LINE
@@ -184,10 +188,12 @@ action_time = time.clock()
 poll_interval = float(r.headers['x-poll-interval'])
 
 next_url = None
-if r.links.has_key('next'):
+if 'next' in r:
     next_url = r.links['next']
 
-while next_url is not None:
+more = True
+
+while more:
     parse_requests(r)
     post_action_time = time.clock()
     if not args.naughty:
@@ -195,10 +201,13 @@ while next_url is not None:
             wait_time = poll_interval - (post_action_time - action_time)
             print("\nSleeping for {0} seconds...\n".format(wait_time))
             time.sleep(float(wait_time))
-    r = requests.get(url, auth=(username, password))
-    poll_interval = r.headers['x-poll-interval']
+    if next_url is not None:
+        r = requests.get(next_url, auth=(username, password))
+        poll_interval = r.headers['x-poll-interval']
 
-    next_url = None
-    if r.links.has_key('next'):
-        next_url = r.links['next']
+        next_url = None
+        if r.links.has_key('next'):
+            next_url = r.links['next']
+    else:
+        more = False
 
