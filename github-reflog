@@ -8,7 +8,7 @@ import requests
 import getpass
 import textwrap
 import time
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -23,7 +23,7 @@ try:
 except ImportError:
     # UNIX
     def getch():
-        import sys, tty, termios
+        import tty, termios
         fd = sys.stdin.fileno()
         old = termios.tcgetattr(fd)
         try:
@@ -37,7 +37,8 @@ init()
 # Initialize the pager stuff. Note, this will probably only work on *nixes
 MAX_PAGE_LINES = int(os.environ.get('LINES', 30))
 CURRENT_LINE = 0
-PAGE_TEXT = Style.BRIGHT + "Press any key to continue, Q to quit...\r" + Style.NORMAL
+PAGE_TEXT = Style.BRIGHT + \
+    "Press any key to continue, Q to quit...\r" + Style.NORMAL
 CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
 
 try:
@@ -68,6 +69,10 @@ except subprocess.CalledProcessError:
     sys.exit(1)
 
 password = getpass.getpass("Please enter password: ")
+
+# Type conversion for Python3
+if isinstance(username, bytes):
+    username = username.decode('utf-8')
 
 def pager(line=""):
     global CURRENT_LINE
@@ -164,12 +169,13 @@ def parse_event(event):
         pager(u"{0} {1} {2}".format(event_id, event_type, event_user))
         pager()
 
-def parse_requests(r):
-    events = r.json()
+def parse_requests(req):
+    events = req.json()
     for e in events:
         parse_event(e)
 
-url = "https://api.github.com/repos/{0}/{1}/events".format(repouser, reponame)
+url = "https://api.github.com/repos/{0}/{1}/events".format(
+        repouser, reponame)
 
 r = requests.get(url, auth=(username, password))
 
