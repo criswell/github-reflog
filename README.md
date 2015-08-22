@@ -39,6 +39,15 @@ Github requests (usually 60 seconds). If you want to be naughty and ignore
 that, then use the `--naughty` option. But don't do that, that'd be
 dickish.
 
+## Making pagination work
+
+If you're on a Mac OS X, or Linux box, be sure to export your `$LINES`
+environmental variable
+
+```
+export LINES
+```
+
 ## Use as a git extension
 
 If this file is in your PATH, then it probably will work as a git
