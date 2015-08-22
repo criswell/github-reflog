@@ -68,7 +68,22 @@ except subprocess.CalledProcessError:
     print("\tgit config github.reponame <repo name>")
     sys.exit(1)
 
-password = getpass.getpass("Please enter password: ")
+password = None
+passtoken = None
+try:
+    password = subprocess.check_output(['git', 'config', 'github.password'])
+    password = password.strip()
+except subprocess.CalledProcessError:
+    try:
+        password = None
+        passtoken = subprocess.check_output(['git', 'config',
+            'github.token'])
+        passtoken = passtoken.strip()
+    except subprocess.CalledProcessError:
+        passtoken = None
+
+if password is None and passtoken is None:
+    password = getpass.getpass("Please enter password: ")
 
 # Type conversion for Python3
 if isinstance(username, bytes):
@@ -77,6 +92,8 @@ if isinstance(repouser, bytes):
     repouser = repouser.decode('utf-8')
 if isinstance(reponame, bytes):
     reponame = reponame.decode('utf-8')
+if isinstance(password, bytes):
+    password = password.decode('utf-8')
 
 def pager(line=""):
     global CURRENT_LINE
@@ -198,7 +215,11 @@ def parse_requests(req):
 url = "https://api.github.com/repos/{0}/{1}/events".format(
         repouser, reponame)
 
-r = requests.get(url, auth=(username, password))
+if passtoken is None:
+    r = requests.get(url, auth=(username, password))
+else:
+    r = requests.get(url, headers={'Authorization':
+        'token {0}'.format(passtoken)})
 
 action_time = time.clock()
 
@@ -220,7 +241,11 @@ while more:
                 print("\nSleeping for {0} seconds...\n".format(wait_time))
                 time.sleep(float(wait_time))
 
-        r = requests.get(next_url, auth=(username, password))
+        if passtoken is None:
+            r = requests.get(next_url, auth=(username, password))
+        else:
+            r = requests.get(next_url, headers={'Authorization':
+                'token {0}'.format(passtoken)})
         poll_interval = r.headers['x-poll-interval']
 
         next_url = None
