@@ -94,6 +94,8 @@ if isinstance(reponame, bytes):
     reponame = reponame.decode('utf-8')
 if isinstance(password, bytes):
     password = password.decode('utf-8')
+if isinstance(passtoken, bytes):
+    passtoken = passtoken.decode('utf-8')
 
 def pager(line=""):
     global CURRENT_LINE
