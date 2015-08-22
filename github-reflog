@@ -114,7 +114,21 @@ def parse_event(event):
     pager('User:    {0} <{1}>'.format(event_user, event_userurl))
     pager('Date:    {0}'.format(event_timestamp))
 
-    if event_type == 'PullRequestEvent':
+    if event_type == 'CreateEvent':
+        ref_type = event['payload']['ref_type']
+        created = event['created_at']
+        desc = event['payload']['description']
+        pager(u"Type:    " + Fore.BLUE + Style.BRIGHT + ref_type + \
+                Fore.RESET + Style.NORMAL)
+        pager(u"Created: {0}".format(created))
+        if ref_type == 'branch':
+            branch_ref = event['payload']['ref']
+            pager(u"Ref:     '{0}'".format(branch_ref))
+        pager()
+        pager_message(desc)
+        pager()
+
+    elif event_type == 'PullRequestEvent':
         pr = event['payload']['number']
         pr_url = event['payload']['pull_request']['html_url']
         action = event['payload']['action']
