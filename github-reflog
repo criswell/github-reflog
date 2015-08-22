@@ -168,7 +168,7 @@ def parse_event(event):
             issue_title = event['payload']['issue']['title']
             pager(u'Issue:   {0} <{1}>'.format(issue_number, issue_url))
             pager()
-            pager('  ' + Style.BRIGHT + issue_title + Style.NORMAL)
+            pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
         comment_text = event['payload']['comment']['body']
         pager()
         pager_message(comment_text)
