@@ -276,6 +276,7 @@ while more:
             r = requests.get(next_url, headers={'Authorization':
                 'token {0}'.format(passtoken)})
         poll_interval = r.headers['x-poll-interval']
+        action_time = time.clock()
 
         next_url = None
         if 'next' in r.links:
