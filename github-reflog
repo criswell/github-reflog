@@ -142,7 +142,7 @@ def parse_event(event):
         pager(u"Created: {0}".format(created))
         if ref_type == 'branch':
             branch_ref = event['payload']['ref']
-            pager(u"Ref:     '{0}'".format(branch_ref))
+            pager(u"Ref:     {0}".format(branch_ref))
         pager()
         pager_message(desc)
         pager()
@@ -167,7 +167,8 @@ def parse_event(event):
             issue_url = event['payload']['issue']['html_url']
             issue_title = event['payload']['issue']['title']
             pager(u'Issue:   {0} <{1}>'.format(issue_number, issue_url))
-            pager(u' -Title: {0}'.format(issue_title))
+            pager()
+            pager('  ' + Style.BRIGHT + issue_title + Style.NORMAL)
         comment_text = event['payload']['comment']['body']
         pager()
         pager_message(comment_text)
