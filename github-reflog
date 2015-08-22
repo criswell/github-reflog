@@ -147,6 +147,14 @@ def parse_event(event):
         pager_message(desc)
         pager()
 
+    elif event_type == 'DeleteEvent':
+        ref_type = event['payload']['ref_type']
+        ref = event['payload']['ref']
+        pager(u'Type:    ' + Fore.BLUE + Style.BRIGHT + ref_type + \
+                Fore.RESET + Style.NORMAL)
+        pager(u'Ref:     {0}'.format(ref))
+        pager()
+
     elif event_type == 'IssueCommentEvent':
         created = event['payload']['comment']['created_at']
         updated = event['payload']['comment']['updated_at']
