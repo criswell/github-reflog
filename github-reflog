@@ -228,8 +228,8 @@ action_time = time.clock()
 poll_interval = float(r.headers['x-poll-interval'])
 
 next_url = None
-if 'next' in r:
-    next_url = r.links['next']
+if 'next' in r.links:
+    next_url = r.links['next']['url']
 
 more = True
 
@@ -251,8 +251,8 @@ while more:
         poll_interval = r.headers['x-poll-interval']
 
         next_url = None
-        if r.links.has_key('next'):
-            next_url = r.links['next']
+        if 'next' in r.links:
+            next_url = r.links['next']['url']
     else:
         more = False
 
