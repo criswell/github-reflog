@@ -97,7 +97,10 @@ def pager(line=""):
 def pager_message(message):
     pretty_message = textwrap.wrap(message)
     for l in pretty_message:
-        pager(u'   ' + l.decode())
+        if isinstance(l, str):
+            pager('   ' + 1)
+        else:
+            pager(u'   ' + l.decode())
 
 def parse_event(event):
     event_id = event['id']
