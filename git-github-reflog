@@ -176,6 +176,10 @@ def push_event_handler(event):
     pager_message(message)
     pager()
 
+def watch_event_handler(event):
+    pager(u"Action   {0}".format(event['payload']['action']))
+    pager()
+
 event_handlers = {
         'CreateEvent' : {
             'method' : create_event_handler,
@@ -202,6 +206,10 @@ event_handlers = {
         'PushEvent' : {
             'method' : push_event_handler,
             'desc' : 'The repository is pushed to'
+            },
+        'WatchEvent' : {
+            'method' : watch_event_handler,
+            'desc' : 'A user has starred the repository'
             }
         }
 
