@@ -101,15 +101,6 @@ $ git config github.password <my password>
 However, this is not recommended as it will store your password as plain-text
 in your `.git/config` file.
 
-## Making pagination work
-
-If you're on a Mac OS X, or Linux box, be sure to export your `$LINES`
-environmental variable
-
-```
-export LINES
-```
-
 ## Use as a git extension
 
 If this file is in your PATH, then it will work as a git
