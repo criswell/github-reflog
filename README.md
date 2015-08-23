@@ -4,7 +4,8 @@ Git's reflog is a wonderful tool for viewing the base transactions in a
 git repository. But, when a project is hosted on Github, how does one see
 Github's reflog?
 
-Well, you can't. However, using this tool you can get the next best thing.
+Well, you can't. However, using `git-github-reflog` you can get the next
+best thing.
 
 This tool will read Github's event log for a given project and display
 it in a human readable form.
