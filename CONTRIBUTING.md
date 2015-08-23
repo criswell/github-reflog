@@ -36,7 +36,7 @@ comments, and titles.
 
 Bodies should be indented using the `pager_message()` method.
 
-## Headers should have some logical consisencies
+## Headers should have some logical consistencies
 
 Take a look at the other event handlers to see how similar events are
 handled. Contributors should strive to keep things consistent across
