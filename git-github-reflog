@@ -256,14 +256,31 @@ if args.events:
             event_handlers[eh]['desc']))
     sys.exit(0)
 
+username = None
+password = None
+passtoken = None
+
 try:
-    username = subprocess.check_output(['git', 'config', 'github.username'])
-    username = username.strip()
+    passtoken = subprocess.check_output(['git', 'config', 'github.token'])
+    passtoken = passtoken.strip()
 except subprocess.CalledProcessError:
-    print("No Github username found!")
-    print("Please set with:")
-    print("\tgit config github.username <username>")
-    sys.exit(1)
+    # No passtoken, get username and possibly password
+    passtoken = None
+    try:
+        username = subprocess.check_output(['git', 'config', 'github.username'])
+        username = username.strip()
+    except subprocess.CalledProcessError:
+        print("No Github username found!")
+        print("Please set with:")
+        print("\tgit config github.username <username>")
+        sys.exit(1)
+
+    try:
+        password = subprocess.check_output(['git', 'config',
+            'github.password'])
+        password = password.strip()
+    except subprocess.CalledProcessError:
+        password = None
 
 try:
     repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
@@ -282,20 +299,6 @@ except subprocess.CalledProcessError:
     print("Please set with:")
     print("\tgit config github.reponame <repo name>")
     sys.exit(1)
-
-password = None
-passtoken = None
-try:
-    password = subprocess.check_output(['git', 'config', 'github.password'])
-    password = password.strip()
-except subprocess.CalledProcessError:
-    try:
-        password = None
-        passtoken = subprocess.check_output(['git', 'config',
-            'github.token'])
-        passtoken = passtoken.strip()
-    except subprocess.CalledProcessError:
-        passtoken = None
 
 if password is None and passtoken is None:
     password = getpass.getpass("Please enter password: ")
