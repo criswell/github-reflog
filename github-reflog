@@ -43,62 +43,7 @@ PAGE_TEXT = Style.BRIGHT + \
     "Press any key to continue, Q to quit...\r" + Style.NORMAL
 CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
 
-try:
-    username = subprocess.check_output(['git', 'config', 'github.username'])
-    username = username.strip()
-except subprocess.CalledProcessError:
-    print("No Github username found!")
-    print("Please set with:")
-    print("\tgit config github.username <username>")
-    sys.exit(1)
-
-try:
-    repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
-    repouser = repouser.strip()
-except subprocess.CalledProcessError:
-    print("No Github repo username found!")
-    print("Please set with:")
-    print("\tgit config github.repouser <repo username>")
-    sys.exit(1)
-
-try:
-    reponame = subprocess.check_output(['git', 'config', 'github.reponame'])
-    reponame = reponame.strip()
-except subprocess.CalledProcessError:
-    print("No Github repo name found!")
-    print("Please set with:")
-    print("\tgit config github.reponame <repo name>")
-    sys.exit(1)
-
-password = None
-passtoken = None
-try:
-    password = subprocess.check_output(['git', 'config', 'github.password'])
-    password = password.strip()
-except subprocess.CalledProcessError:
-    try:
-        password = None
-        passtoken = subprocess.check_output(['git', 'config',
-            'github.token'])
-        passtoken = passtoken.strip()
-    except subprocess.CalledProcessError:
-        passtoken = None
-
-if password is None and passtoken is None:
-    password = getpass.getpass("Please enter password: ")
-
-# Type conversion for Python3
-if isinstance(username, bytes):
-    username = username.decode('utf-8')
-if isinstance(repouser, bytes):
-    repouser = repouser.decode('utf-8')
-if isinstance(reponame, bytes):
-    reponame = reponame.decode('utf-8')
-if isinstance(password, bytes):
-    password = password.decode('utf-8')
-if isinstance(passtoken, bytes):
-    passtoken = passtoken.decode('utf-8')
-
+# Event Handlers
 def create_event_handler(event):
     ref_type = event['payload']['ref_type']
     created = event['created_at']
@@ -221,6 +166,7 @@ event_handlers = {
             }
         }
 
+# The pagination method
 def pager(line=""):
     global CURRENT_LINE
     global MAX_PAGE_LINES
@@ -237,6 +183,7 @@ def pager(line=""):
     print(line)
     CURRENT_LINE = CURRENT_LINE + 1
 
+# Indent a message
 def pager_message(message):
     pretty_message = textwrap.wrap(message)
     for l in pretty_message:
@@ -245,6 +192,7 @@ def pager_message(message):
         else:
             pager(u'   ' + l.decode())
 
+# Main event parsing method
 def parse_event(event):
     event_id = event['id']
     event_type = event['type']
@@ -263,10 +211,68 @@ def parse_event(event):
         pager(u"{0} {1} {2}".format(event_id, event_type, event_user))
         pager()
 
+# Main request parser
 def parse_requests(req):
     events = req.json()
     for e in events:
         parse_event(e)
+
+# Main Entry point
+try:
+    username = subprocess.check_output(['git', 'config', 'github.username'])
+    username = username.strip()
+except subprocess.CalledProcessError:
+    print("No Github username found!")
+    print("Please set with:")
+    print("\tgit config github.username <username>")
+    sys.exit(1)
+
+try:
+    repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
+    repouser = repouser.strip()
+except subprocess.CalledProcessError:
+    print("No Github repo username found!")
+    print("Please set with:")
+    print("\tgit config github.repouser <repo username>")
+    sys.exit(1)
+
+try:
+    reponame = subprocess.check_output(['git', 'config', 'github.reponame'])
+    reponame = reponame.strip()
+except subprocess.CalledProcessError:
+    print("No Github repo name found!")
+    print("Please set with:")
+    print("\tgit config github.reponame <repo name>")
+    sys.exit(1)
+
+password = None
+passtoken = None
+try:
+    password = subprocess.check_output(['git', 'config', 'github.password'])
+    password = password.strip()
+except subprocess.CalledProcessError:
+    try:
+        password = None
+        passtoken = subprocess.check_output(['git', 'config',
+            'github.token'])
+        passtoken = passtoken.strip()
+    except subprocess.CalledProcessError:
+        passtoken = None
+
+if password is None and passtoken is None:
+    password = getpass.getpass("Please enter password: ")
+
+# Type conversion for Python3
+if isinstance(username, bytes):
+    username = username.decode('utf-8')
+if isinstance(repouser, bytes):
+    repouser = repouser.decode('utf-8')
+if isinstance(reponame, bytes):
+    reponame = reponame.decode('utf-8')
+if isinstance(password, bytes):
+    password = password.decode('utf-8')
+if isinstance(passtoken, bytes):
+    passtoken = passtoken.decode('utf-8')
 
 url = "https://api.github.com/repos/{0}/{1}/events".format(
         repouser, reponame)
