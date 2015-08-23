@@ -249,12 +249,12 @@ def parse_requests(req):
         parse_event(e)
 
 # Generate a request
-def get_request(u, p, pt):
+def get_request(rurl, u, p, pt):
     if passtoken:
-        req = requests.get(url, headers={'Authorization':
+        req = requests.get(rurl, headers={'Authorization':
             'token {0}'.format(pt)})
     else:
-        req = requests.get(url, auth=(u, p))
+        req = requests.get(rurl, auth=(u, p))
     return req
 
 # Main Entry point
@@ -327,7 +327,7 @@ if isinstance(passtoken, bytes):
 url = "https://api.github.com/repos/{0}/{1}/events".format(
         repouser, reponame)
 
-r = get_request(username, password, passtoken)
+r = get_request(url, username, password, passtoken)
 
 action_time = time.clock()
 
@@ -349,7 +349,7 @@ while more:
                 print("\nSleeping for {0} seconds...\n".format(wait_time))
                 time.sleep(float(wait_time))
 
-        r = get_request(username, password, passtoken)
+        r = get_request(next_url, username, password, passtoken)
         poll_interval = r.headers['x-poll-interval']
         action_time = time.clock()
 
