@@ -24,10 +24,10 @@ Set up Python requirements (can be done in a virtualenv):
 pip install -r requirements.txt
 ```
 
-Then run the `github-reflog` command:
+Then run the `git-github-reflog` command:
 
 ```
-usage: github-reflog [-h] [--naughty]
+usage: git-github-reflog [-h] [--naughty]
 
 optional arguments:
   -h, --help  show this help message and exit
@@ -35,7 +35,7 @@ optional arguments:
   --events    List supported events
 ```
 
-Normally `github-reflog` will pause between requests for the amount of time
+Normally `git-github-reflog` will pause between requests for the amount of time
 Github requests (usually 60 seconds). If you want to be naughty and ignore
 that, then use the `--naughty` option. But don't do that, that'd be
 dickish.
@@ -51,7 +51,7 @@ export LINES
 
 ## Use as a git extension
 
-If this file is in your PATH, then it probably will work as a git
+If this file is in your PATH, then it will work as a git
 extension
 
 ```
