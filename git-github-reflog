@@ -193,7 +193,7 @@ event_handlers = {
             },
         'PushEvent' : {
             'method' : push_event_handler,
-            'desc' : 'The repository is pused to'
+            'desc' : 'The repository is pushed to'
             }
         }
 
