@@ -220,7 +220,7 @@ def parse_requests(req):
 # Main Entry point
 if args.events:
     key_len = len(max(event_handlers.keys(), key=len))
-    for eh in event_handlers:
+    for eh in sorted(event_handlers.keys()):
         pager('  {0} : {1}'.format(eh.rjust(key_len),
             event_handlers[eh]['desc']))
     sys.exit(0)
