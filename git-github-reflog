@@ -104,6 +104,32 @@ def issue_comment_event_handler(event):
     pager_message(comment_text)
     pager()
 
+def issues_event_handler(event):
+    created = event['payload']['issue']['created_at']
+    updated = event['payload']['issue']['updated_at']
+    issue_url = event['payload']['issue']['html_url']
+    pager(u"Created:   {0}".format(created))
+    pager(u"Updated:   {0}".format(updated))
+    pager(u"URL:       {0}".format(issue_url))
+    action = event['payload']['action']
+    state = event['payload']['issue']['state']
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+            state + Fore.RESET + Style.NORMAL)
+    if action == 'assigned' or action == 'unassigned':
+        assignee = event['payload']['issue']['assignee']['login']
+        assignee_url = event['payload']['issue']['assignee']['url']
+        pager(u"Assignee: {0} <{1}>".format(assignee, assignee_url))
+    # FIXME - Would be nice to also handle label changes, but I can't
+    # seem to generate one of those actions to test
+    issue_title = event['payload']['issue']['title']
+    issue_body = event['payload']['issue']['body']
+    pager()
+    pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
+    pager()
+    pager_message(issue_body)
+    pager()
+
 def pull_request_event_handler(event):
     pr = event['payload']['number']
     pr_url = event['payload']['pull_request']['html_url']
@@ -207,6 +233,11 @@ event_handlers = {
         'IssueCommentEvent' : {
             'method' : issue_comment_event_handler,
             'desc' : 'A comment is created on an issue or pull-request'
+            },
+        'IssuesEvent' : {
+            'method' : issues_event_handler,
+            'desc' : 'An issue is assigned, unassigned, labeled, ' + \
+                    'unlabeled, opened, closed, or reopened'
             },
         'PullRequestEvent' : {
             'method' : pull_request_event_handler,
