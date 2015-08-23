@@ -218,6 +218,13 @@ def parse_requests(req):
         parse_event(e)
 
 # Main Entry point
+if args.events:
+    key_len = len(max(event_handlers.keys(), key=len))
+    for eh in event_handlers:
+        pager('  {0} : {1}'.format(eh.rjust(key_len),
+            event_handlers[eh]['desc']))
+    sys.exit(0)
+
 try:
     username = subprocess.check_output(['git', 'config', 'github.username'])
     username = username.strip()
