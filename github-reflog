@@ -97,6 +97,128 @@ if isinstance(password, bytes):
 if isinstance(passtoken, bytes):
     passtoken = passtoken.decode('utf-8')
 
+def create_event_handler(event):
+    ref_type = event['payload']['ref_type']
+    created = event['created_at']
+    desc = event['payload']['description']
+    pager(u"Type:    " + Fore.BLUE + Style.BRIGHT + ref_type + \
+            Fore.RESET + Style.NORMAL)
+    pager(u"Created: {0}".format(created))
+    if ref_type == 'branch':
+        branch_ref = event['payload']['ref']
+        pager(u"Ref:     {0}".format(branch_ref))
+    pager()
+    pager_message(desc)
+    pager()
+
+def delete_event_handler(event):
+    ref_type = event['payload']['ref_type']
+    ref = event['payload']['ref']
+    pager(u'Type:    ' + Fore.BLUE + Style.BRIGHT + ref_type + \
+            Fore.RESET + Style.NORMAL)
+    pager(u'Ref:     {0}'.format(ref))
+    pager()
+
+def issue_comment_event_handler(event):
+    created = event['payload']['comment']['created_at']
+    updated = event['payload']['comment']['updated_at']
+    comment_url = event['payload']['comment']['html_url']
+    pager(u'Created: {0}'.format(created))
+    pager(u'Updated: {0}'.format(updated))
+    pager(u'URL:     {0}'.format(comment_url))
+    if 'issue' in event['payload']:
+        issue_number = event['payload']['issue']['number']
+        issue_url = event['payload']['issue']['html_url']
+        issue_title = event['payload']['issue']['title']
+        pager(u'Issue:   {0} <{1}>'.format(issue_number, issue_url))
+        pager()
+        pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
+    comment_text = event['payload']['comment']['body']
+    pager()
+    pager_message(comment_text)
+    pager()
+
+def pull_request_event_handler(event):
+    pr = event['payload']['number']
+    pr_url = event['payload']['pull_request']['html_url']
+    action = event['payload']['action']
+    state = event['payload']['pull_request']['state']
+    created = event['payload']['pull_request']['created_at']
+    updated = event['payload']['pull_request']['updated_at']
+    pr_user = event['payload']['pull_request']['user']['login']
+    pr_userurl = event['payload']['pull_request']['user']['html_url']
+    head_sha = event['payload']['pull_request']['head']['sha']
+    head_ref = event['payload']['pull_request']['head']['ref']
+    title = event['payload']['pull_request']['title']
+    body = event['payload']['pull_request']['body']
+    pager(u"PR:      #{0} <{1}>".format(pr, pr_url))
+    pager(u"Created: {0}\tUpdated: {1}".format(created, updated))
+    pager(u"SHA:     {0}".format(head_sha))
+    pager(u"Author:  {0} <{1}>".format(pr_user, pr_userurl))
+    pager(u"Ref:     {0}".format(head_ref))
+    pager(u"Action:  " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+            state + Fore.RESET + Style.NORMAL)
+    if action == 'closed':
+        merged = event['payload']['pull_request']['merged']
+        if merged:
+            pager(u"Merged:  " + Fore.GREEN + Style.BRIGHT + "True" + \
+                    Fore.RESET + Style.NORMAL)
+        else:
+            pager(u"Merged:  " + Fore.RED + Style.BRIGHT + "False" + \
+                    Fore.RESET + Style.NORMAL + " (unmerged commits)")
+
+    pager()
+    pager(" " + Style.BRIGHT + title + Style.NORMAL)
+    pager()
+    pager_message(body)
+    pager()
+
+def push_event_handler(event):
+    head_sha = event['payload']['head']
+    ref = event['payload']['ref']
+    # Find the associated message for HEAD
+    message = 'Unknown'
+    author = 'Unknown'
+    email = 'Unknown'
+    for commit in event['payload']['commits']:
+        if commit['sha'] == head_sha:
+            message = commit['message']
+            author = commit['author']['name']
+            email = commit['author']['email']
+
+    pager(u"SHA:     {0}".format(head_sha))
+    pager(u"Author:  {0} <{1}>".format(author, email))
+    pager(u"Ref:     {0}".format(ref))
+    pager()
+
+    pager_message(message)
+    pager()
+
+event_handlers = {
+        'CreateEvent' : {
+            'method' : create_event_handler,
+            'desc' : 'A created repository, branch or tag'
+            },
+        'DeleteEvent' : {
+            'method' : delete_event_handler,
+            'desc' : 'A deleted branch or tag'
+            },
+        'IssueCommentEvent' : {
+            'method' : issue_comment_event_handler,
+            'desc' : 'A comment is created on an issue or pull-request'
+            },
+        'PullRequestEvent' : {
+            'method' : pull_request_event_handler,
+            'desc' : 'A pull request is assigned, unassigned, labeled, ' + \
+                    'unlabeled, opened, closed, reopened, or synchronized'
+            },
+        'PushEvent' : {
+            'method' : push_event_handler,
+            'desc' : 'The repository is pused to'
+            }
+        }
+
 def pager(line=""):
     global CURRENT_LINE
     global MAX_PAGE_LINES
@@ -132,105 +254,8 @@ def parse_event(event):
     pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + Fore.RESET)
     pager('User:    {0} <{1}>'.format(event_user, event_userurl))
     pager('Date:    {0}'.format(event_timestamp))
-
-    if event_type == 'CreateEvent':
-        ref_type = event['payload']['ref_type']
-        created = event['created_at']
-        desc = event['payload']['description']
-        pager(u"Type:    " + Fore.BLUE + Style.BRIGHT + ref_type + \
-                Fore.RESET + Style.NORMAL)
-        pager(u"Created: {0}".format(created))
-        if ref_type == 'branch':
-            branch_ref = event['payload']['ref']
-            pager(u"Ref:     {0}".format(branch_ref))
-        pager()
-        pager_message(desc)
-        pager()
-
-    elif event_type == 'DeleteEvent':
-        ref_type = event['payload']['ref_type']
-        ref = event['payload']['ref']
-        pager(u'Type:    ' + Fore.BLUE + Style.BRIGHT + ref_type + \
-                Fore.RESET + Style.NORMAL)
-        pager(u'Ref:     {0}'.format(ref))
-        pager()
-
-    elif event_type == 'IssueCommentEvent':
-        created = event['payload']['comment']['created_at']
-        updated = event['payload']['comment']['updated_at']
-        comment_url = event['payload']['comment']['html_url']
-        pager(u'Created: {0}'.format(created))
-        pager(u'Updated: {0}'.format(updated))
-        pager(u'URL:     {0}'.format(comment_url))
-        if 'issue' in event['payload']:
-            issue_number = event['payload']['issue']['number']
-            issue_url = event['payload']['issue']['html_url']
-            issue_title = event['payload']['issue']['title']
-            pager(u'Issue:   {0} <{1}>'.format(issue_number, issue_url))
-            pager()
-            pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
-        comment_text = event['payload']['comment']['body']
-        pager()
-        pager_message(comment_text)
-        pager()
-
-    elif event_type == 'PullRequestEvent':
-        pr = event['payload']['number']
-        pr_url = event['payload']['pull_request']['html_url']
-        action = event['payload']['action']
-        state = event['payload']['pull_request']['state']
-        created = event['payload']['pull_request']['created_at']
-        updated = event['payload']['pull_request']['updated_at']
-        pr_user = event['payload']['pull_request']['user']['login']
-        pr_userurl = event['payload']['pull_request']['user']['html_url']
-        head_sha = event['payload']['pull_request']['head']['sha']
-        head_ref = event['payload']['pull_request']['head']['ref']
-        title = event['payload']['pull_request']['title']
-        body = event['payload']['pull_request']['body']
-        pager(u"PR:      #{0} <{1}>".format(pr, pr_url))
-        pager(u"Created: {0}\tUpdated: {1}".format(created, updated))
-        pager(u"SHA:     {0}".format(head_sha))
-        pager(u"Author:  {0} <{1}>".format(pr_user, pr_userurl))
-        pager(u"Ref:     {0}".format(head_ref))
-        pager(u"Action:  " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
-                Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
-                state + Fore.RESET + Style.NORMAL)
-        if action == 'closed':
-            merged = event['payload']['pull_request']['merged']
-            if merged:
-                pager(u"Merged:  " + Fore.GREEN + Style.BRIGHT + "True" + \
-                        Fore.RESET + Style.NORMAL)
-            else:
-                pager(u"Merged:  " + Fore.RED + Style.BRIGHT + "False" + \
-                        Fore.RESET + Style.NORMAL + " (unmerged commits)")
-
-        pager()
-        pager(" " + Style.BRIGHT + title + Style.NORMAL)
-        pager()
-        pager_message(body)
-        pager()
-
-    elif event_type == 'PushEvent':
-        head_sha = event['payload']['head']
-        ref = event['payload']['ref']
-        # Find the associated message for HEAD
-        message = 'Unknown'
-        author = 'Unknown'
-        email = 'Unknown'
-        for commit in event['payload']['commits']:
-            if commit['sha'] == head_sha:
-                message = commit['message']
-                author = commit['author']['name']
-                email = commit['author']['email']
-
-        pager(u"SHA:     {0}".format(head_sha))
-        pager(u"Author:  {0} <{1}>".format(author, email))
-        pager(u"Ref:     {0}".format(ref))
-        pager()
-
-        pager_message(message)
-        pager()
-
+    if event_type in event_handlers:
+        event_handlers[event_type]['method'](event)
     else:
         # Catch-all for everything else
         pager(u"{0} {1} {2}".format(event_id, event_type, event_user))
