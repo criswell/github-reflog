@@ -56,12 +56,12 @@ def create_event_handler(event):
     ref_type = event['payload']['ref_type']
     created = event['created_at']
     desc = event['payload']['description']
-    pager(u"Type:    " + Fore.BLUE + Style.BRIGHT + ref_type + \
+    pager(u"Type:     " + Fore.BLUE + Style.BRIGHT + ref_type + \
             Fore.RESET + Style.NORMAL)
-    pager(u"Created: {0}".format(created))
+    pager(u"Created:  {0}".format(created))
     if ref_type == 'branch':
         branch_ref = event['payload']['ref']
-        pager(u"Ref:     {0}".format(branch_ref))
+        pager(u"Ref:      {0}".format(branch_ref))
     pager()
     pager_message(desc)
     pager()
@@ -69,23 +69,34 @@ def create_event_handler(event):
 def delete_event_handler(event):
     ref_type = event['payload']['ref_type']
     ref = event['payload']['ref']
-    pager(u'Type:    ' + Fore.BLUE + Style.BRIGHT + ref_type + \
+    pager(u'Type:     ' + Fore.BLUE + Style.BRIGHT + ref_type + \
             Fore.RESET + Style.NORMAL)
-    pager(u'Ref:     {0}'.format(ref))
+    pager(u'Ref:      {0}'.format(ref))
+    pager()
+
+def fork_event_handler(event):
+    owner = event['payload']['forkee']['owner']['login']
+    owner_url = event['payload']['forkee']['owner']['html_url']
+    full_name = event['payload']['forkee']['full_name']
+    private = event['payload']['forkee']['private']
+    fork_url = event['payload']['forkee']['html_url']
+    pager(u"Author:   {0} <{1}>".format(owner, owner_url))
+    pager(u"Fullname: {0}\t\tPrivate: {1}".format(full_name, private))
+    pager(u"URL:      {0}".format(fork_url))
     pager()
 
 def issue_comment_event_handler(event):
     created = event['payload']['comment']['created_at']
     updated = event['payload']['comment']['updated_at']
     comment_url = event['payload']['comment']['html_url']
-    pager(u'Created: {0}'.format(created))
-    pager(u'Updated: {0}'.format(updated))
-    pager(u'URL:     {0}'.format(comment_url))
+    pager(u'Created:  {0}'.format(created))
+    pager(u'Updated:  {0}'.format(updated))
+    pager(u'URL:      {0}'.format(comment_url))
     if 'issue' in event['payload']:
         issue_number = event['payload']['issue']['number']
         issue_url = event['payload']['issue']['html_url']
         issue_title = event['payload']['issue']['title']
-        pager(u'Issue:   {0} <{1}>'.format(issue_number, issue_url))
+        pager(u'Issue:    {0} <{1}>'.format(issue_number, issue_url))
         pager()
         pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
     comment_text = event['payload']['comment']['body']
@@ -106,21 +117,21 @@ def pull_request_event_handler(event):
     head_ref = event['payload']['pull_request']['head']['ref']
     title = event['payload']['pull_request']['title']
     body = event['payload']['pull_request']['body']
-    pager(u"PR:      #{0} <{1}>".format(pr, pr_url))
-    pager(u"Created: {0}\tUpdated: {1}".format(created, updated))
-    pager(u"SHA:     {0}".format(head_sha))
-    pager(u"Author:  {0} <{1}>".format(pr_user, pr_userurl))
-    pager(u"Ref:     {0}".format(head_ref))
-    pager(u"Action:  " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+    pager(u"PR:       #{0} <{1}>".format(pr, pr_url))
+    pager(u"Created:  {0}\tUpdated: {1}".format(created, updated))
+    pager(u"SHA:      {0}".format(head_sha))
+    pager(u"Author:   {0} <{1}>".format(pr_user, pr_userurl))
+    pager(u"Ref:      {0}".format(head_ref))
+    pager(u"Action:   " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
             Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
             state + Fore.RESET + Style.NORMAL)
     if action == 'closed':
         merged = event['payload']['pull_request']['merged']
         if merged:
-            pager(u"Merged:  " + Fore.GREEN + Style.BRIGHT + "True" + \
+            pager(u"Merged:   " + Fore.GREEN + Style.BRIGHT + "True" + \
                     Fore.RESET + Style.NORMAL)
         else:
-            pager(u"Merged:  " + Fore.RED + Style.BRIGHT + "False" + \
+            pager(u"Merged:   " + Fore.RED + Style.BRIGHT + "False" + \
                     Fore.RESET + Style.NORMAL + " (unmerged commits)")
 
     pager()
@@ -142,13 +153,13 @@ def pull_request_review_comment_event_handler(event):
     state = event['payload']['pull_request']['state']
     comment_url = event['payload']['comment']['html_url']
     comment = event['payload']['comment']['body']
-    pager(u"PR:      #{0} <{1}>".format(pr, pr_url))
-    pager(u"Created: {0}\tUpdated: {1}".format(created, updated))
-    pager(u"SHA:     {0}".format(head_sha))
-    pager(u"Author:  {0} <{1}>".format(pr_author, pr_authorurl))
-    pager(u"Ref:     {0}".format(head_ref))
-    pager(u"URL:     {0}".format(comment_url))
-    pager(u"Action:  " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+    pager(u"PR:       #{0} <{1}>".format(pr, pr_url))
+    pager(u"Created:  {0}\tUpdated: {1}".format(created, updated))
+    pager(u"SHA:      {0}".format(head_sha))
+    pager(u"Author:   {0} <{1}>".format(pr_author, pr_authorurl))
+    pager(u"Ref:      {0}".format(head_ref))
+    pager(u"URL:      {0}".format(comment_url))
+    pager(u"Action:   " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
             Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
             state + Fore.RESET + Style.NORMAL)
     pager()
@@ -168,16 +179,16 @@ def push_event_handler(event):
             author = commit['author']['name']
             email = commit['author']['email']
 
-    pager(u"SHA:     {0}".format(head_sha))
-    pager(u"Author:  {0} <{1}>".format(author, email))
-    pager(u"Ref:     {0}".format(ref))
+    pager(u"SHA:      {0}".format(head_sha))
+    pager(u"Author:   {0} <{1}>".format(author, email))
+    pager(u"Ref:      {0}".format(ref))
     pager()
 
     pager_message(message)
     pager()
 
 def watch_event_handler(event):
-    pager(u"Action   {0}".format(event['payload']['action']))
+    pager(u"Action    {0}".format(event['payload']['action']))
     pager()
 
 event_handlers = {
@@ -188,6 +199,10 @@ event_handlers = {
         'DeleteEvent' : {
             'method' : delete_event_handler,
             'desc' : 'A deleted branch or tag'
+            },
+        'ForkEvent' : {
+            'method' : fork_event_handler,
+            'desc' : 'A user forked the repository'
             },
         'IssueCommentEvent' : {
             'method' : issue_comment_event_handler,
@@ -250,8 +265,8 @@ def parse_event(event):
 
     # Header
     pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + Fore.RESET)
-    pager('User:    {0} <{1}>'.format(event_user, event_userurl))
-    pager('Date:    {0}'.format(event_timestamp))
+    pager('User:     {0} <{1}>'.format(event_user, event_userurl))
+    pager('Date:     {0}'.format(event_timestamp))
     if event_type in event_handlers:
         event_handlers[event_type]['method'](event)
     else:
