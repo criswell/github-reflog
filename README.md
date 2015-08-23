@@ -134,6 +134,11 @@ API calls as much as possible.
 * Error handling is currently flaky at best, or nonexistent at worst. If
 you'd like to help, fork it and improve it!
 
+## Contributing and FAQ
+
+* [Contributing](CONTRIBUTING.md)
+* [FAQ](FAQ.md)
+
 ## Supported platforms
 
 It should work on Linux, Mac OS X, and other Unixes.
