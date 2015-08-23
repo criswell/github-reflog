@@ -125,7 +125,7 @@ git github-reflog
 
 * Github's event log only goes back 90 days.
 * `git-github-reflog` does not support all of the [event
-types]((https://developer.github.com/v3/activity/events/types/) which Github
+types](https://developer.github.com/v3/activity/events/types/) which Github
 uses. If you'd like to help add support for a given type, fork me and write a
 handler!
 * Github has [rate limits](https://developer.github.com/v3/#rate-limiting) for
