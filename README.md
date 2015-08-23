@@ -53,6 +53,55 @@ and repo name. The repo owner is the user or organization under which
 the repo is published on at Github. The repo name is the name of the
 repository on Github.
 
+So, for example, in the following Github project URL:
+
+```
+https://github.com/twbs/bootstrap
+```
+
+The repo owner is `twbs` and the repo name is `bootstrap`. If I had a local
+clone of this repo, I would set it up for `git-github-reflog` thusly:
+
+```
+$ cd bootstrap
+$ git config github.repouser twbs
+$ git config github.reponame bootstrap
+```
+
+### Setting up your authentication metadata
+
+There are two ways which `git-github-reflog` can authenticate with Github:
+With an authentication token or with a username and password.
+
+#### Using authentication tokens
+
+Go to your [personal access token page](https://github.com/settings/tokens)
+and generate a personal access token which `git-github-reflog` can use.
+
+Then, set your access token thusly:
+
+```
+$ git config github.token <access token>
+```
+
+#### Using username and password
+
+Set your username with:
+
+```
+$ git config github.username <my username>
+```
+
+When you run `git-github-reflog`, it will ask for your password. You
+can also set your password (so you don't need to enter it again) with:
+
+```
+$ git config github.password <my password>
+```
+
+However, this is not recommended as it will store your password as plain-text
+in your `.git/config` file.
+
 ## Making pagination work
 
 If you're on a Mac OS X, or Linux box, be sure to export your `$LINES`
