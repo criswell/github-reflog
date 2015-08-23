@@ -40,6 +40,19 @@ Github requests (usually 60 seconds). If you want to be naughty and ignore
 that, then use the `--naughty` option. But don't do that, that'd be
 dickish.
 
+## Setting up your git repo
+
+Inside your git repo, you will need to set a few things up in order for
+`git-github-reflog` to work. `git-github-reflog` will need to know the
+repo owner, the repo name, and your personal authentication information.
+
+### Setting up the repo metadata
+
+Change into your locally cloned repo directory, and add the repo owner
+and repo name. The repo owner is the user or organization under which
+the repo is published on at Github. The repo name is the name of the
+repository on Github.
+
 ## Making pagination work
 
 If you're on a Mac OS X, or Linux box, be sure to export your `$LINES`
