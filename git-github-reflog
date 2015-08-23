@@ -37,7 +37,15 @@ except ImportError:
 init()
 
 # Initialize the pager stuff. Note, this will probably only work on *nixes
-MAX_PAGE_LINES = int(os.environ.get('LINES', 30))
+def get_max_lines():
+    max_lines = None
+    try:
+        max_lines = subprocess.check_output(['tput', 'lines'])
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        max_lines = os.environ.get('LINES', 30)
+    return int(max_lines)
+
+MAX_PAGE_LINES = get_max_lines()
 CURRENT_LINE = 0
 PAGE_TEXT = Style.BRIGHT + \
     "Press any key to continue, Q to quit...\r" + Style.NORMAL
@@ -208,6 +216,7 @@ def pager(line=""):
         c = getch()
         print(CLEAR_TEXT, end="")
         CURRENT_LINE = 0
+        MAX_PAGE_LINES = get_max_lines()
         if c == 'q' or c == 'Q' or ord(c) == 3:
             sys.exit(0)
 
