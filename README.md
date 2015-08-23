@@ -113,7 +113,7 @@ git github-reflog
 ## Caveats
 
 * Github's event log only goes back 90 days, and you are only allowed to
-view a total of 300 past events..
+view a total of 300 past events.
 * `git-github-reflog` does not support all of the [event
 types](https://developer.github.com/v3/activity/events/types/) which Github
 uses. If you'd like to help add support for a given type, fork me and write a
