@@ -121,6 +121,32 @@ def pull_request_event_handler(event):
     pager_message(body)
     pager()
 
+def pull_request_review_comment_event_handler(event):
+    pr = event['payload']['pull_request']['number']
+    pr_url = event['payload']['pull_request']['html_url']
+    created = event['payload']['pull_request']['created_at']
+    updated = event['payload']['pull_request']['updated_at']
+    head_sha = event['payload']['pull_request']['head']['sha']
+    head_ref = event['payload']['pull_request']['head']['ref']
+    pr_author = event['payload']['comment']['user']['login']
+    pr_authorurl = event['payload']['comment']['user']['html_url']
+    action = event['payload']['action']
+    state = event['payload']['pull_request']['state']
+    comment_url = event['payload']['comment']['html_url']
+    comment = event['payload']['comment']['body']
+    pager(u"PR:      #{0} <{1}>".format(pr, pr_url))
+    pager(u"Created: {0}\tUpdated: {1}".format(created, updated))
+    pager(u"SHA:     {0}".format(head_sha))
+    pager(u"Author:  {0} <{1}>".format(pr_author, pr_authorurl))
+    pager(u"Ref:     {0}".format(head_ref))
+    pager(u"URL:     {0}".format(comment_url))
+    pager(u"Action:  " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+            state + Fore.RESET + Style.NORMAL)
+    pager()
+    pager_message(comment)
+    pager()
+
 def push_event_handler(event):
     head_sha = event['payload']['head']
     ref = event['payload']['ref']
@@ -159,6 +185,11 @@ event_handlers = {
             'method' : pull_request_event_handler,
             'desc' : 'A pull request is assigned, unassigned, labeled, ' + \
                     'unlabeled, opened, closed, reopened, or synchronized'
+            },
+        'PullRequestReviewCommentEvent' : {
+            'method' : pull_request_review_comment_event_handler,
+            'desc' : 'A comment is created on a portion of the unified ' + \
+                    'diff of a pull request'
             },
         'PushEvent' : {
             'method' : push_event_handler,
