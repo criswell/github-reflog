@@ -32,6 +32,7 @@ usage: github-reflog [-h] [--naughty]
 optional arguments:
   -h, --help  show this help message and exit
   --naughty   Ignore Github's requested poll-interval (naughty naughty)
+  --events    List supported events
 ```
 
 Normally `github-reflog` will pause between requests for the amount of time
