@@ -16,6 +16,9 @@ it in a human readable form.
 * Have someone `--force` pushing and overwriting history? Catch them with this
 tool.
 
+You can see a screencast of `git-github-reflog` in use
+[here](https://asciinema.org/a/25454).
+
 ## Install
 
 Set up Python requirements (can be done in a virtualenv):
