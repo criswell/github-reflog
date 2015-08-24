@@ -159,6 +159,15 @@ def issues_event_handler(event):
     pager_message(issue_body)
     pager()
 
+def member_event_handler(event):
+    new_member = event['payload']['member']['login']
+    new_member_url = event['payload']['member']['html_url']
+    action = event['payload']['action']
+    pager(u"Member:    {0} <{1}>".format(new_member, new_member_url))
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL)
+    pager()
+
 def pull_request_event_handler(event):
     pr = event['payload']['number']
     pr_url = event['payload']['pull_request']['html_url']
@@ -275,6 +284,10 @@ event_handlers = {
             'method' : issues_event_handler,
             'desc' : 'An issue is assigned, unassigned, labeled, ' + \
                     'unlabeled, opened, closed, or reopened'
+            },
+        'MemberEvent' : {
+            'method' : member_event_handler,
+            'desc' : 'A user is added as a collaborator'
             },
         'PullRequestEvent' : {
             'method' : pull_request_event_handler,
