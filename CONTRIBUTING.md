@@ -1,7 +1,7 @@
 # Monolithic versus modular
 
 I'm well aware I can make this project using Python modules. I'm also
-aware this would probably make working with it easier.
+aware this would probably make contributing to it easier.
 
 However, one of the current design goal is ease of installation. There is no
 installation tool for `git-github-reflog`, and it should be easy to install
