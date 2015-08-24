@@ -18,7 +18,7 @@ tool.
 
 You can see a screencast of `git-github-reflog` in action:
 
-[![asciicast](https://asciinema.org/a/25457.png)](https://asciinema.org/a/25457)
+[![asciicast](https://asciinema.org/a/25457.png)](https://asciinema.org/a/25457?autoplay=1)
 
 ## Install
 
