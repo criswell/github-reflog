@@ -102,6 +102,18 @@ def fork_event_handler(event):
     pager(u"URL:       {0}".format(fork_url))
     pager()
 
+def gollum_event_handler(event):
+    pager()
+    for p in event['payload']['pages']:
+        action = p['action']
+        page_name = p['page_name']
+        page_url = p['html_url']
+        page_sha = p['sha']
+        pager(u' Page Name: {0}\t\tPage Url: {1}'.format(page_name, page_url))
+        pager(u" Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+                Style.NORMAL + "\t\tSHA:      " + page_sha)
+        pager()
+
 def issue_comment_event_handler(event):
     created = event['payload']['comment']['created_at']
     updated = event['payload']['comment']['updated_at']
@@ -250,6 +262,10 @@ event_handlers = {
         'ForkEvent' : {
             'method' : fork_event_handler,
             'desc' : 'A user forked the repository'
+            },
+        'GollumEvent' : {
+            'method' : gollum_event_handler,
+            'desc' : 'A Wiki page is created or updated'
             },
         'IssueCommentEvent' : {
             'method' : issue_comment_event_handler,
