@@ -3,8 +3,8 @@
 I'm well aware I can make this project using Python modules. I'm also
 aware this would probably make contributing to it easier.
 
-However, one of the current design goal is ease of installation. There is no
-installation tool for `git-github-reflog`, and it should be easy to install
+However, one of the current design goals is **ease of installation**. There is
+no installation tool for `git-github-reflog`, and it should be easy to install
 the tool by simply copying a single file into your `$PATH` somewhere. If
 the project were modular, it would no longer be a trivial installation.
 
