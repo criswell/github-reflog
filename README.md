@@ -16,7 +16,7 @@ it in a human readable form.
 * Have someone `--force` pushing and overwriting history? Catch them with this
 tool.
 
-You can see a screencast of `git-github-reflog` in use
+You can see a screencast of `git-github-reflog` in action
 [here](https://asciinema.org/a/25457).
 
 ## Install
