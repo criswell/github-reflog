@@ -71,11 +71,9 @@ def commit_comment_event_handler(event):
 
 def create_event_handler(event):
     ref_type = event['payload']['ref_type']
-    created = event['created_at']
     desc = event['payload']['description']
     pager(u"Type:      " + Fore.BLUE + Style.BRIGHT + ref_type + \
             Fore.RESET + Style.NORMAL)
-    pager(u"Created:   {0}".format(created))
     if ref_type == 'branch' or ref_type == 'tag':
         branch_ref = event['payload']['ref']
         pager(u"Ref:       {0}".format(branch_ref))
