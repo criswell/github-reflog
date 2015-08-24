@@ -12,8 +12,7 @@ it in a human readable form.
 
 * Want to track down who deleted or created a branch? This tool can do that.
 * Want to see who is forking or following a repo? This tool can do that.
-* Want to follow commit status changes, see who did them and why? This tool can
-do that.
+* Want to see when code was commented on and by who? This tool can do that.
 
 ## Install
 
