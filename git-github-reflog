@@ -414,6 +414,21 @@ url = "https://api.github.com/repos/{0}/{1}/events".format(
 
 r = get_request(url, username, password, passtoken)
 
+if r.status_code == requests.codes.unauthorized:
+    print("Response from Github: Unauthorized")
+    print("Please check authentication and try again...")
+    sys.exit(1)
+elif r.status_code == requests.codes.not_found:
+    print("Response from Github: 404 Not Found")
+    print("Please check that repouser and reponame are valid in your config...")
+    sys.exit(1)
+elif r.status_code == requests.codes.forbidden:
+    print("Response from Github: 403 Forbidden")
+    if int(r.headers['X-RateLimit-Remaining']) < 1:
+        print("You have exceeded your rate limit! See " + \
+                "'https://developer.github.com/v3/#rate-limiting'")
+    sys.exit(1)
+
 action_time = time.clock()
 
 poll_interval = float(r.headers['x-poll-interval'])
