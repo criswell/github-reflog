@@ -77,10 +77,10 @@ With an authentication token or with a username and password.
 Go to your [personal access token page](https://github.com/settings/tokens)
 and generate a personal access token which `git-github-reflog` can use.
 
-Then, set your access token thusly:
+Then, set your access token globally like this:
 
 ```
-$ git config github.token <access token>
+$ git config --global github.token <access token>
 ```
 
 #### Using username and password
@@ -88,7 +88,7 @@ $ git config github.token <access token>
 Set your username with:
 
 ```
-$ git config github.username <my username>
+$ git config --global github.username <my username>
 ```
 
 When you run `git-github-reflog`, it will ask for your password. You
@@ -99,7 +99,7 @@ $ git config github.password <my password>
 ```
 
 However, this is not recommended as it will store your password as plain-text
-in your `.git/config` file.
+in your `.git/config` file (or `~/.gitconfig` if set globally).
 
 ## Use as a git extension
 
