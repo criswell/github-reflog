@@ -17,7 +17,7 @@ it in a human readable form.
 tool.
 
 You can see a screencast of `git-github-reflog` in use
-[here](https://asciinema.org/a/25454).
+[here](https://asciinema.org/a/25457).
 
 ## Install
 
