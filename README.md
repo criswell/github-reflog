@@ -120,8 +120,8 @@ uses. If you'd like to help add support for a given type, fork me and write a
 handler!
 * Github has [rate limits](https://developer.github.com/v3/#rate-limiting) for
 their API. You can very easily hit those limits using `git-github-reflog`.
-* Currently has built in pagination and does not support piping to external
-pagers or files. The reason for this is because we want to limit the Github
+* 'git-github-reflog` currently has built in pagination and does not support piping
+to external pagers or files. The reason for this is because we want to limit the Github
 API calls as much as possible.
 * Error handling is currently flaky at best, or nonexistent at worst. If
 you'd like to help, fork it and improve it!
