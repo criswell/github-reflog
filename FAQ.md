@@ -5,6 +5,11 @@
 Simply put `git-github-reflog` somewhere in your `$PATH`. I'd recommend
 `$HOME/bin`, if you have it. See [here](http://askubuntu.com/a/9849).
 
+## Why isn't the script simply called `github-reflog`?
+
+I mainly wanted to use this script as a git extension. In order for that
+to work, the script has to be named `git-github-reflog`.
+
 ## Why don't you support all Github events?
 
 There are quite a few
