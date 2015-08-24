@@ -92,3 +92,12 @@ To make it easier for humans to scan these log entries, similar patterns
 should be followed. If the SHA is *always* in the same general location,
 finding it is easier, for example.
 
+# Use pager() for output
+
+The `pager()` method provides the mechanism by which we do pagination, and it
+should be used for all event log output.
+
+Additionally, you should only pass *one* line per `pager()` call- e.g., you
+should *never* use a newline (`\n`) in a `pager()` call. If you want to add
+an empty line, simply call `pager()` with no arguments.
+
