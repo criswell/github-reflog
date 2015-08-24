@@ -30,7 +30,7 @@ pip install -r requirements.txt
 Then run the `git-github-reflog` command:
 
 ```
-usage: git-github-reflog [-h] [--naughty]
+usage: git-github-reflog [-h] [--naughty] [--events] [--desc]
 
 optional arguments:
   -h, --help  show this help message and exit
