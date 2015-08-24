@@ -1,5 +1,10 @@
 # FAQ
 
+## How do I install it?
+
+Simply put `git-github-reflog` somewhere in your `$PATH`. I'd recommend
+`$HOME/bin`, if you have it. See [here](http://askubuntu.com/a/9849).
+
 ## Why don't you support all Github events?
 
 There are quite a few
