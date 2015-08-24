@@ -76,7 +76,7 @@ def create_event_handler(event):
     pager(u"Type:      " + Fore.BLUE + Style.BRIGHT + ref_type + \
             Fore.RESET + Style.NORMAL)
     pager(u"Created:   {0}".format(created))
-    if ref_type == 'branch':
+    if ref_type == 'branch' or ref_type == 'tag':
         branch_ref = event['payload']['ref']
         pager(u"Ref:       {0}".format(branch_ref))
     pager()
@@ -270,7 +270,7 @@ def release_event_handler(event):
             Style.NORMAL + "\t\tPre-Release: " + Fore.BLUE + Style.BRIGHT + \
             prerelease + Fore.RESET + Style.NORMAL)
     pager()
-    pager(u"  " + Style.BRIGHT + rel_name + Style.NORMAL)
+    pager(u" " + Style.BRIGHT + rel_name + Style.NORMAL)
     pager()
     pager_message(rel_body)
     pager()
