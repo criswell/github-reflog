@@ -103,8 +103,8 @@ in your `.git/config` file (or `~/.gitconfig` if set globally).
 
 ## Use as a git extension
 
-If this file is in your PATH, then it will work as a git
-extension
+If this `git-github-reflog' is placed in your `$PATH`, then it will work as a
+git extension
 
 ```
 git github-reflog
