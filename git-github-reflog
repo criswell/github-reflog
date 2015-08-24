@@ -54,6 +54,21 @@ PAGE_TEXT = Style.BRIGHT + \
 CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
 
 # Event Handlers
+def commit_comment_event_handler(event):
+    comment_id = event['payload']['comment']['id']
+    author = event['payload']['comment']['user']['login']
+    author_url = event['payload']['comment']['user']['html_url']
+    comment_url = event['payload']['comment']['html_url']
+    commit_sha = event['payload']['comment']['commit_id']
+    body = event['payload']['comment']['body']
+    pager(u"SHA:       {0}".format(commit_sha))
+    pager(u"Author:    {0} <{1}>".format(author, author_url))
+    pager(u"ID:        {0}".format(comment_id))
+    pager(u"URL:       {0}".format(comment_url))
+    pager()
+    pager_message(body)
+    pager()
+
 def create_event_handler(event):
     ref_type = event['payload']['ref_type']
     created = event['created_at']
@@ -220,6 +235,10 @@ def watch_event_handler(event):
     pager()
 
 event_handlers = {
+        'CommitCommentEvent' : {
+            'method' : commit_comment_event_handler,
+            'desc' : 'A commit comment is created'
+            },
         'CreateEvent' : {
             'method' : create_event_handler,
             'desc' : 'A created repository, branch or tag'
