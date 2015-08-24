@@ -17,6 +17,8 @@ parser.add_argument("--naughty",
         action="store_true")
 parser.add_argument("--events", help="List supported events",
         action="store_true")
+parser.add_argument("--desc", help="Display helpful descriptions in the " + \
+        "event log", action="store_true")
 args = parser.parse_args()
 
 try:
@@ -295,7 +297,11 @@ def parse_event(event):
     event_timestamp = event['created_at']
 
     # Header
-    pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + Fore.RESET)
+    if args.desc and event_type in event_handlers:
+        pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + ' - ' + \
+                event_handlers[event_type]['desc'] + Fore.RESET)
+    else:
+        pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + Fore.RESET)
     pager('User:      {0} <{1}>'.format(event_user, event_userurl))
     pager('Date:      {0}'.format(event_timestamp))
     if event_type in event_handlers:
