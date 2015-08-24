@@ -14,3 +14,10 @@ If you'd like to help,
 * Submit an issue with a copy of the JSON generated for the event.
 * Fork the repo, add the handler yourself, and submit a PR.
 
+## Why doesn't the output look more like git's reflog?
+
+Github's events can be pretty complicated. I tried to make `github-reflog`
+look more like git's `reflog` output, but it got too messy and hard to follow.
+
+So I opted for something which looks more like git's `log` output.
+
