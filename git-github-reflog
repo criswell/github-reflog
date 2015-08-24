@@ -427,6 +427,8 @@ elif r.status_code == requests.codes.forbidden:
     if int(r.headers['X-RateLimit-Remaining']) < 1:
         print("You have exceeded your rate limit! See " + \
                 "'https://developer.github.com/v3/#rate-limiting'")
+    else:
+        print("Check your permissions and try again...")
     sys.exit(1)
 
 action_time = time.clock()
