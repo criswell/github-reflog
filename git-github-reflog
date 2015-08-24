@@ -251,8 +251,32 @@ def push_event_handler(event):
     pager_message(message)
     pager()
 
+def release_event_handler(event):
+    action = event['payload']['action']
+    tag_name = event['payload']['release']['tag_name']
+    rel_name = event['payload']['release']['name']
+    rel_url = event['payload']['release']['html_url']
+    rel_body = event['payload']['release']['body']
+    prerelease = str(event['payload']['release']['prerelease'])
+    created = event['payload']['release']['created_at']
+    published = event['payload']['release']['published_at']
+    author = event['payload']['release']['author']['login']
+    author_url = event['payload']['release']['author']['html_url']
+    pager(u"Created:   {0}\tPublished: {1}".format(created, published))
+    pager(u"Author:    {0} <{1}>".format(author, author_url))
+    pager(u"Tag:       {0}".format(tag_name))
+    pager(u"URL:       {0}".format(rel_url))
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\tPre-Release: " + Fore.BLUE + Style.BRIGHT + \
+            prerelease + Fore.RESET + Style.NORMAL)
+    pager()
+    pager(u"  " + Style.BRIGHT + rel_name + Style.NORMAL)
+    pager()
+    pager_message(rel_body)
+    pager()
+
 def watch_event_handler(event):
-    pager(u"Action     {0}".format(event['payload']['action']))
+    pager(u"Action:    {0}".format(event['payload']['action']))
     pager()
 
 event_handlers = {
@@ -302,6 +326,10 @@ event_handlers = {
         'PushEvent' : {
             'method' : push_event_handler,
             'desc' : 'The repository is pushed to'
+            },
+        'ReleaseEvent' : {
+            'method' : release_event_handler,
+            'desc' : 'A release is published'
             },
         'WatchEvent' : {
             'method' : watch_event_handler,
