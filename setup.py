@@ -28,7 +28,7 @@ setup(
     keywords='git github development',
 
     install_requires=[
-        'requests', 'colorama'
+        'requests', 'colorama', 'argparse'
     ],
 
     scripts=['git-github-reflog']
