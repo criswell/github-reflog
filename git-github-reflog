@@ -408,6 +408,9 @@ if args.events:
         pager('  {0} : {1}'.format(eh.rjust(key_len),
             event_handlers[eh]['desc']))
     sys.exit(0)
+elif args.version:
+    print(__version__)
+    sys.exit(0)
 
 username = None
 password = None
@@ -467,10 +470,6 @@ if isinstance(password, bytes):
     password = password.decode('utf-8')
 if isinstance(passtoken, bytes):
     passtoken = passtoken.decode('utf-8')
-
-if args.version:
-    print(__version__)
-    sys.exit(0)
 
 url = "https://api.github.com/repos/{0}/{1}/events".format(
         repouser, reponame)
