@@ -21,10 +21,14 @@ You can see a screencast of `git-github-reflog` in action
 
 ## Install
 
-Set up Python requirements (can be done in a virtualenv):
+`git-github-reflog` can be installed with:
 
 ```
-pip install -r requirements.txt
+pip install git-github-reflog
+
+       # -or- for an individual user
+
+pip install --user git-github-reflog
 ```
 
 Then run the `git-github-reflog` command:
