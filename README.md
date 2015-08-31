@@ -21,7 +21,8 @@ You can see a screencast of `git-github-reflog` in action
 
 ## Install
 
-`git-github-reflog` can be installed with:
+`git-github-reflog` requires Python (>=2.7) and
+[pip](https://pypi.python.org/pypi/pip), it can be installed with:
 
 ```
 pip install git-github-reflog
