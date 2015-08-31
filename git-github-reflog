@@ -19,6 +19,8 @@ parser.add_argument("--events", help="List supported events",
         action="store_true")
 parser.add_argument("--desc", help="Display helpful descriptions in the " + \
         "event log", action="store_true")
+parser.add_argument("--version", help="Display the version",
+        action="store_true")
 args = parser.parse_args()
 
 try:
@@ -37,6 +39,8 @@ except ImportError:
             termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 init()
+
+__version__ = "0.0.1"
 
 # Initialize the pager stuff. Note, this will probably only work on *nixes
 def get_max_lines():
@@ -463,6 +467,10 @@ if isinstance(password, bytes):
     password = password.decode('utf-8')
 if isinstance(passtoken, bytes):
     passtoken = passtoken.decode('utf-8')
+
+if args.version:
+    print(__version__)
+    sys.exit(0)
 
 url = "https://api.github.com/repos/{0}/{1}/events".format(
         repouser, reponame)
